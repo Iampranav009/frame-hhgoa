@@ -243,7 +243,7 @@ export default function AssetGenerator() {
           </div>
 
           {/* ── RIGHT: Canvas + actions ───────────────────────────────── */}
-          <div style={{ position: 'sticky', top: 80 }}>
+          <div style={{ position: 'sticky', top: 80, maxWidth: 420, justifySelf: 'center', width: '100%' }}>
 
             {/* Canvas preview */}
             <div style={{
