@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { renderPFP } from '../utils/canvasRenderer';
+import { renderPFP, renderIDCard } from '../utils/canvasRenderer';
+
+const TITLES = ['10X ENGINEER', 'DESIGN WIZARD', 'FULL-STACK HACKER', 'WEB3 ARTISAN', 'PRODUCT BUILDER', 'SMART CONTRACT DEV', 'UI/UX MAESTRO', 'CODE NINJA'];
+
 
 function Slider({ label, value, min, max, step, unit, onChange }) {
   return (
@@ -22,6 +25,9 @@ export default function AssetGenerator() {
   const [panX,    setPanX]    = useState(0);
   const [panY,    setPanY]    = useState(0);
   const [name,    setName]    = useState('');
+  const [format,  setFormat]  = useState('pfp');
+  const [role,    setRole]    = useState('');
+  const [builderTitle, setBuilderTitle] = useState(TITLES[0]);
   const [dragging, setDragging] = useState(false);
   const [copied,   setCopied]   = useState(false);
   const [shared,   setShared]   = useState(false);
@@ -29,11 +35,17 @@ export default function AssetGenerator() {
   const canvasRef  = useRef(null);
   const fileRef    = useRef(null);
 
+  const rollTitle = () => setBuilderTitle(TITLES[Math.floor(Math.random() * TITLES.length)]);
+
   // Re-render whenever inputs change
   const render = useCallback(() => {
     if (!canvasRef.current) return;
-    renderPFP(canvasRef.current, { imageElement: imageEl, zoom, panX, panY, name });
-  }, [imageEl, zoom, panX, panY, name]);
+    if (format === 'pfp') {
+      renderPFP(canvasRef.current, { imageElement: imageEl, zoom, panX, panY, name });
+    } else {
+      renderIDCard(canvasRef.current, { imageElement: imageEl, zoom, panX, panY, name, role, builderTitle });
+    }
+  }, [imageEl, zoom, panX, panY, name, format, role, builderTitle]);
 
   useEffect(() => { render(); }, [render]);
 
@@ -105,6 +117,28 @@ export default function AssetGenerator() {
           {/* ── LEFT: Controls ───────────────────────────────────────── */}
           <div>
 
+            {/* Format Toggle */}
+            <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
+              <button
+                onClick={() => setFormat('pfp')}
+                style={{
+                  flex: 1, padding: '12px',
+                  background: format === 'pfp' ? 'var(--yellow)' : 'transparent',
+                  color: format === 'pfp' ? '#000' : 'rgba(255,255,255,0.6)',
+                  border: `2px solid ${format === 'pfp' ? 'var(--yellow)' : 'rgba(255,255,255,0.2)'}`,
+                  fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 11, cursor: 'pointer', textTransform: 'uppercase'
+                }}>PFP Frame</button>
+              <button
+                onClick={() => setFormat('idcard')}
+                style={{
+                  flex: 1, padding: '12px',
+                  background: format === 'idcard' ? 'var(--yellow)' : 'transparent',
+                  color: format === 'idcard' ? '#000' : 'rgba(255,255,255,0.6)',
+                  border: `2px solid ${format === 'idcard' ? 'var(--yellow)' : 'rgba(255,255,255,0.2)'}`,
+                  fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 11, cursor: 'pointer', textTransform: 'uppercase'
+                }}>Builder ID Card</button>
+            </div>
+
             {/* 1. Upload */}
             <div className="card" style={{ marginBottom: 12 }}>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', color: 'var(--yellow)', textTransform: 'uppercase', marginBottom: 12 }}>
@@ -161,7 +195,7 @@ export default function AssetGenerator() {
             {/* 3. Name */}
             <div className="card" style={{ marginBottom: 20 }}>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', color: 'var(--yellow)', textTransform: 'uppercase', marginBottom: 12 }}>
-                3. Your Name <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.3)', textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+                3. Your Name {format === 'pfp' && <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.3)', textTransform: 'none', letterSpacing: 0 }}>(optional)</span>}
               </div>
               <input
                 type="text"
@@ -171,9 +205,39 @@ export default function AssetGenerator() {
                 placeholder="e.g. Prayasu"
                 style={{ width: '100%' }}
               />
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 8, lineHeight: 1.5 }}>
-                Appears in small text at the bottom-left of your frame.
-              </p>
+              {format === 'pfp' && (
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 8, lineHeight: 1.5 }}>
+                  Appears in small text at the bottom-left of your frame.
+                </p>
+              )}
+
+              {format === 'idcard' && (
+                <>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', color: 'var(--yellow)', textTransform: 'uppercase', marginBottom: 12, marginTop: 24 }}>
+                    4. Stack / Role
+                  </div>
+                  <input
+                    type="text"
+                    value={role}
+                    maxLength={22}
+                    onChange={e => setRole(e.target.value)}
+                    placeholder="e.g. Frontend Developer"
+                    style={{ width: '100%' }}
+                  />
+
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', color: 'var(--yellow)', textTransform: 'uppercase', marginBottom: 12, marginTop: 24 }}>
+                    5. Builder Title
+                  </div>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <div style={{ flex: 1, padding: '12px 16px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--pink)' }}>
+                      ✦ {builderTitle} ✦
+                    </div>
+                    <button onClick={rollTitle} style={{ padding: '0 16px', background: 'var(--pink)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12 }}>
+                      RE-ROLL 🎲
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
 
           </div>
@@ -194,11 +258,13 @@ export default function AssetGenerator() {
                   <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--yellow)', display: 'inline-block' }} />
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em' }}>LIVE PREVIEW</span>
                 </div>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(255,255,255,0.25)' }}>1080 × 1080</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(255,255,255,0.25)' }}>
+                  {format === 'pfp' ? '1080 × 1080' : '1080 × 1350'}
+                </span>
               </div>
 
-              {/* Square aspect-ratio container */}
-              <div style={{ width: '100%', paddingBottom: '100%', position: 'relative', background: '#063A1A' }}>
+              {/* Dynamic aspect-ratio container */}
+              <div style={{ width: '100%', paddingBottom: format === 'pfp' ? '100%' : '125%', position: 'relative', background: '#063A1A', transition: 'padding 0.3s' }}>
                 <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
               </div>
             </div>

@@ -114,3 +114,104 @@ export async function renderPFP(canvas, opts) {
     ctx.fillText(name, PADDING_X, PADDING_Y);
   }
 }
+
+const ID_W = 1080;
+const ID_H = 1350;
+
+export async function renderIDCard(canvas, opts) {
+  canvas.width = ID_W;
+  canvas.height = ID_H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#063A1A';
+  ctx.fillRect(0, 0, ID_W, ID_H);
+  
+  // Inner border
+  ctx.strokeStyle = '#FEE101'; // yellow
+  ctx.lineWidth = 12;
+  ctx.strokeRect(30, 30, ID_W - 60, ID_H - 60);
+  
+  // Header text
+  ctx.fillStyle = '#FEE101';
+  ctx.font = `800 48px 'Space Grotesk', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('HACKER HOUSE GOA 2026', ID_W / 2, 70);
+
+  // Photo
+  const photoW = 600;
+  const photoH = 600;
+  const photoX = (ID_W - photoW) / 2;
+  const photoY = 160;
+
+  if (opts.imageElement) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(photoX, photoY, photoW, photoH, 30);
+    ctx.clip();
+    
+    const img = opts.imageElement;
+    const zoom  = opts.zoom  || 1;
+    const panX  = opts.panX  || 0;
+    const panY  = opts.panY  || 0;
+
+    const iAspect = img.width / img.height;
+    let drawW, drawH;
+    if (iAspect > 1) { drawH = photoH * zoom; drawW = drawH * iAspect; }
+    else             { drawW = photoW * zoom; drawH = drawW / iAspect; }
+    if (drawW < photoW * zoom) { drawW = photoW * zoom; drawH = drawW / iAspect; }
+    if (drawH < photoH * zoom) { drawH = photoH * zoom; drawW = drawH * iAspect; }
+
+    const drawX = photoX + photoW / 2 - drawW / 2 + panX;
+    const drawY = photoY + photoH / 2 - drawH / 2 + panY;
+    
+    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+    ctx.restore();
+  } else {
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.beginPath();
+    ctx.roundRect(photoX, photoY, photoW, photoH, 30);
+    ctx.fill();
+    
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = `500 24px 'Space Grotesk', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Upload photo', photoX + photoW / 2, photoY + photoH / 2);
+  }
+
+  // Photo outline
+  ctx.strokeStyle = '#FF2D78'; // pink
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.roundRect(photoX, photoY, photoW, photoH, 30);
+  ctx.stroke();
+
+  // Name
+  const name = (opts.name || 'YOUR NAME').trim().toUpperCase();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `800 80px 'Space Grotesk', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(name, ID_W / 2, photoY + photoH + 60);
+
+  // Stack / Role
+  const role = (opts.role || 'HACKER').trim().toUpperCase();
+  ctx.fillStyle = '#FEE101';
+  ctx.font = `600 40px 'Space Mono', monospace`;
+  ctx.fillText(role, ID_W / 2, photoY + photoH + 160);
+
+  // Builder Title
+  const title = (opts.builderTitle || '10X ENGINEER').trim().toUpperCase();
+  ctx.fillStyle = '#FF2D78';
+  ctx.font = `600 32px 'Space Mono', monospace`;
+  ctx.fillText(`✦ ${title} ✦`, ID_W / 2, photoY + photoH + 240);
+
+  // Footer / Branding
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = `500 28px 'Space Grotesk', sans-serif`;
+  ctx.fillText("INDIA'S BIGGEST 4-DAY BUILD-STATION", ID_W / 2, ID_H - 140);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText('OCT 28-31, GOA', ID_W / 2, ID_H - 100);
+}
