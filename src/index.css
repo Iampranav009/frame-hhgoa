@@ -1,28 +1,31 @@
 /* ─── HH GOA 2026 Design System ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@700;800&family=Work+Sans:wght@700&display=swap');
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 :root {
-  --green-dark:   #063A1A;
-  --green-mid:    #0D5C2E;
-  --green-main:   #0F6B33;
-  --green-light:  #16803D;
-  --yellow:       #FEE101;
-  --yellow-dark:  #E5C800;
-  --pink:         #FF2D78;
-  --pink-dark:    #D91A60;
-  --white:        #FFFFFF;
-  --offwhite:     #F5F0E8;
-  --sand:         #F0E4C8;
-  --black:        #090F09;
+  --green-dark: #063A1A;
+  --green-mid: #0D5C2E;
+  --green-main: #0F6B33;
+  --green-light: #16803D;
+  --yellow: #FEE101;
+  --yellow-dark: #E5C800;
+  --pink: #FF2D78;
+  --pink-dark: #D91A60;
+  --white: #FFFFFF;
+  --offwhite: #F5F0E8;
+  --sand: #F0E4C8;
+  --black: #090F09;
 
   --font-display: 'DM Serif Display', serif;
-  --font-body:    'Space Grotesk', sans-serif;
-  --font-mono:    'Space Mono', monospace;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
 
 html {
@@ -108,7 +111,7 @@ body {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
-  border: 2px solid rgba(255,255,255,0.5);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 0;
   cursor: pointer;
   text-decoration: none;
@@ -149,7 +152,7 @@ body {
 .tag-white {
   background: transparent;
   color: var(--white);
-  border-color: rgba(255,255,255,0.4);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* ─── Cards ──────────────────────────────────────────────────────────────── */
@@ -234,28 +237,52 @@ select:focus {
 }
 
 input[type="text"]::placeholder {
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 /* ─── Animations ─────────────────────────────────────────────────────────── */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-float {
